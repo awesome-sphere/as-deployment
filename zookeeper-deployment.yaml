@@ -27,6 +27,17 @@ spec:
   selector:
     app: zookeeper
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zookeeper-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 0.2Gi
+---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
@@ -73,7 +84,7 @@ spec:
         image: "cloudurable/kube-zookeeper:0.0.1"
         resources:
           requests:
-            memory: "0.2Gi"
+            memory: 200Mi
             cpu: "0.5"
         ports:
         - containerPort: 2181
@@ -120,16 +131,20 @@ spec:
           initialDelaySeconds: 10
           timeoutSeconds: 5
         volumeMounts:
-        - name: datadir
+        - name: zookeeper-pv
           mountPath: /var/lib/zookeeper
+      volumes:
+      - name: zookeeper-pv
+        persistentVolumeClaim:
+          claimName: zookeeper-pvc
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
-  volumeClaimTemplates:
-  - metadata:
-      name: datadir
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 0.5Gi
+  # volumeClaimTemplates:
+  # - metadata:
+  #     name: datadir
+  #   spec:
+  #     accessModes: [ "ReadWriteOnce" ]
+  #     resources:
+  #       requests:
+  #         storage: 0.5Gi
