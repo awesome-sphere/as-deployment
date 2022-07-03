@@ -85,3 +85,5 @@ spec:
     - port: 5432
   selector:
     app: postgres-user
+  # NOTE: Remove this when deployed
+  type: LoadBalancer
