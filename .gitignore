@@ -1,3 +1,2 @@
 dockerconfigjson.yaml
-postgres-secret.yaml
-postgres-user-secret.yaml
+*-secret.yaml
