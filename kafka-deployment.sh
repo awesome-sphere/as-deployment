@@ -4,14 +4,23 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 
 # install zookeeper
 helm install zookeeper bitnami/zookeeper \
-  --set replicaCount=3 \
+  --set replicaCount=1 \
   --set auth.enabled=false \
   --set allowAnonymousLogin=true
 
 helm install kafka bitnami/kafka \
   --set zookeeper.enabled=false \
-  --set replicaCount=3 \
+  --set replicaCount=1 \
+  --set externalAccess.enabled=true \
+  --set externalAccess.service.type=LoadBalancer \
+  --set externalAccess.service.port=9092 \
+  --set externalAccess.service.loadBalancerNames={'kafka-0'} \
   --set externalZookeeper.servers=zookeeper.default.svc.cluster.local
+
+  #   --set externalAccess.enabled=true \
+  # --set externalAccess.service.type=LoadBalancer \
+  # --set externalAccess.service.port=9092 \
+  # --set externalAccess.service.loadBalancerNames={'kafka-0'} \
 
 # Testing
 # POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=kafka,app.kubernetes.io/instance=kafka,app.kubernetes.io/component=kafka" -o jsonpath="{.items[0].metadata.name}")
