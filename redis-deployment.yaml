@@ -58,4 +58,4 @@ spec:
   selector:
     tier: backend
     layer: redis
-  type: ClusterIP
+  type: LoadBalancer # FIXME: Change to ClusterIP when deployed
