@@ -1,5 +1,5 @@
 #!/bin/bash
 
 kubectl apply -f .
-kubectl apply -f ./databases/postgres-user-deployment.yaml -f ./databases/postgres-user-secret.yaml
+kubectl apply -f ./databases/
 ./kafka-deployment.sh
