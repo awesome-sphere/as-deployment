@@ -1,2 +1,3 @@
 dockerconfigjson.yaml
 *-secret.yaml
+.DS_Store
