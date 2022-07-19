@@ -1,0 +1,53 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: sidecar-for-my-app
+spec:
+  mode: sidecar
+  config: |
+    receivers:
+      jaeger:
+        protocols:
+          thrift_compact:
+    processors:
+
+    exporters:
+      logging:
+
+    service:
+      pipelines:
+        traces:
+          receivers: [jaeger]
+          processors: []
+          exporters: [logging]
+---
+# NOTE: This is dummy deployment for testing.
+# If we wanna inject sidecar, we put in the annotation section
+# into the pod.
+# metadata:
+#   annotations:
+#     sidecar.opentelemetry.io/inject: "true"
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  labels:
+    app: my-app
+spec:
+  selector:
+    matchLabels:
+      app: my-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: my-app
+      annotations:
+        sidecar.opentelemetry.io/inject: "true" # CORRECT
+    spec:
+      containers:
+      - name: myapp
+        image: jaegertracing/vertx-create-span:operator-e2e-tests
+        ports:
+          - containerPort: 8080
+            protocol: TCP
