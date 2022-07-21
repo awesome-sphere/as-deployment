@@ -9,7 +9,7 @@ spec:
   - protocol: TCP
     port: 9001
 ---
-# PAYMENT SERVICE DEPLOYMENT
+# AUTHENTICATION SERVICE DEPLOYMENT
 apiVersion: apps/v1
 kind: Deployment
 metadata:
