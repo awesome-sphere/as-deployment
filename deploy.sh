@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./otel-deployment.sh
+# ./otel-deployment.sh
 ./kafka-deployment.sh
 kubectl apply -R -f .
 # kubectl apply -f ./databases/

@@ -15,10 +15,3 @@ spec:
             name: as-frontend
             port:
               number: 80
-      - path: /seating
-        pathType: Prefix
-        backend:
-          service:
-            name: as-seating-svc
-            port:
-              number: 9004
