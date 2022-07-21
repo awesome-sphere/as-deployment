@@ -85,6 +85,16 @@ spec:
             secretKeyRef:
               name: as-booking-secret
               key: THEATER_AMOUNT
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: SECRET_KEY
+        - name: ISSUER
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: ISSUER
       imagePullSecrets:
       - name: dockerconfigjson-github-com
 ---
@@ -164,5 +174,15 @@ spec:
             secretKeyRef:
               name: as-booking-secret
               key: THEATER_AMOUNT
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: SECRET_KEY
+        - name: ISSUER
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: ISSUER
       imagePullSecrets:
       - name: dockerconfigjson-github-com
