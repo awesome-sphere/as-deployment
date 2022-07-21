@@ -1,0 +1,124 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: as-seating-svc
+spec:
+  selector:
+    app: as-seating
+  ports:
+  - protocol: TCP
+    port: 9004
+---
+# SEATING SERVICE DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: as-seating
+  labels:
+    app: as-seating
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: as-seating
+  template:
+    metadata:
+      labels:
+        app: as-seating
+      annotations:
+        sidecar.opentelemetry.io/inject: "true" 
+    spec:
+      containers:
+      - name:  as-seating
+        image: ghcr.io/awesome-sphere/as-seating/as-seating:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9004
+        env:
+        - name: KAFKA_HOST
+          valueFrom:
+            secretKeyRef:
+              name: seating-secret
+              key: KAFKA_HOST
+        - name: KAFKA_PORT
+          valueFrom:
+            secretKeyRef:
+              name: seating-secret
+              key: KAFKA_PORT
+        - name: KAFKA_TOPIC
+          valueFrom:
+            secretKeyRef:
+              name: seating-secret
+              key: KAFKA_TOPIC
+        - name: KAFKA_TOPIC_PARTITION
+          valueFrom:
+            secretKeyRef:
+              name: seating-secret
+              key: KAFKA_TOPIC_PARTITION
+        - name: REDIS_HOST
+          valueFrom:
+            secretKeyRef:
+              name: seating-secret
+              key: REDIS_HOST
+        - name: REDIS_PORT
+          valueFrom:
+            secretKeyRef:
+              name: seating-secret
+              key: REDIS_PORT
+      imagePullSecrets:
+      - name: dockerconfigjson-github-com
+---
+# SEATING CONSUMER DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: as-seating-consumer
+  labels:
+    app: as-seating-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: as-seating-consumer
+  template:
+    metadata:
+      labels:
+        app: as-seating-consumer
+    spec:
+      containers:
+      - name:  as-seating-consumer
+        image: ghcr.io/awesome-sphere/as-seating/as-seating-consumer:latest
+        imagePullPolicy: Always
+        env:
+        - name: KAFKA_HOST
+          valueFrom:
+            secretKeyRef:
+              name: seating-secret
+              key: KAFKA_HOST
+        - name: KAFKA_PORT
+          valueFrom:
+            secretKeyRef:
+              name: seating-secret
+              key: KAFKA_PORT
+        - name: KAFKA_TOPIC
+          valueFrom:
+            secretKeyRef:
+              name: seating-secret
+              key: KAFKA_TOPIC
+        - name: KAFKA_TOPIC_PARTITION
+          valueFrom:
+            secretKeyRef:
+              name: seating-secret
+              key: KAFKA_TOPIC_PARTITION
+        - name: REDIS_HOST
+          valueFrom:
+            secretKeyRef:
+              name: seating-secret
+              key: REDIS_HOST
+        - name: REDIS_PORT
+          valueFrom:
+            secretKeyRef:
+              name: seating-secret
+              key: REDIS_PORT
+      imagePullSecrets:
+      - name: dockerconfigjson-github-com

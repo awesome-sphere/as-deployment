@@ -15,3 +15,10 @@ spec:
             name: kafka-headless
             port:
               number: 9092
+      - path: /seating
+        pathType: Prefix
+        backend:
+          service:
+            name: as-seating-svc
+            port:
+              number: 9004
