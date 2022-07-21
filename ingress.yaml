@@ -12,9 +12,9 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: kafka-headless
+            name: as-frontend
             port:
-              number: 9092
+              number: 80
       - path: /seating
         pathType: Prefix
         backend:

@@ -1,0 +1,36 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: as-frontend
+spec:
+  selector:
+    app: as-frontend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5555
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: as-frontend
+  labels:
+    app: as-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: as-frontend
+  template:
+    metadata:
+      labels:
+        app: as-frontend
+    spec:
+      containers:
+      - name:  as-frontend
+        image: ghcr.io/awesome-sphere/as-frontend/as-frontend
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: dockerconfigjson-github-com
