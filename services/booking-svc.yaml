@@ -38,23 +38,53 @@ spec:
         - name: KAFKA_BOOKING_TOPIC_NAME
           valueFrom:
             secretKeyRef:
-              name: booking-secret
+              name: as-booking-secret
               key: KAFKA_BOOKING_TOPIC_NAME
-        # - name: KAFKA_TOPIC_PARTITION
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: payment-secret
-        #       key: KAFKA_TOPIC_PARTITION
-        # - name: CREATE_ORDER_TOPIC
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: payment-secret
-        #       key: CREATE_ORDER_TOPIC
-        # - name: UPDATE_ORDER_TOPIC
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: payment-secret
-        #       key: UPDATE_ORDER_TOPIC
+        - name: KAFKA_CANCEL_TOPIC_NAME
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: KAFKA_CANCEL_TOPIC_NAME
+        - name: KAFKA_ADDR
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: KAFKA_ADDR
+        - name: KAFKA_BOOKING_TOPIC_PARTITION
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: KAFKA_BOOKING_TOPIC_PARTITION
+        - name: KAFKA_CANCEL_TOPIC_PARTITION
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: KAFKA_CANCEL_TOPIC_PARTITION
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_HOST
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: POSTGRES_HOST
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: POSTGRES_DB
+        - name: THEATER_AMOUNT
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: THEATER_AMOUNT
       imagePullSecrets:
       - name: dockerconfigjson-github-com
 ---
@@ -74,31 +104,65 @@ spec:
     metadata:
       labels:
         app: as-booking-consumer
+      annotations:
+        sidecar.opentelemetry.io/inject: "true" 
     spec:
       containers:
       - name:  as-booking-consumer
-        image: ghcr.io/awesome-sphere/as-booking-consumer/as-booking-consumer:latest
+        image: ghcr.io/awesome-sphere/as-booking/as-booking:latest
         imagePullPolicy: Always
+        ports:
+        - containerPort: 9009
         env:
-        # - name: KAFKA_ADDR
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: payment-secret
-        #       key: KAFKA_ADDR
-        # - name: KAFKA_TOPIC_PARTITION
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: payment-secret
-        #       key: KAFKA_TOPIC_PARTITION
-        # - name: CREATE_ORDER_TOPIC
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: payment-secret
-        #       key: CREATE_ORDER_TOPIC
-        # - name: UPDATE_ORDER_TOPIC
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: payment-secret
-        #       key: UPDATE_ORDER_TOPIC
+        - name: KAFKA_BOOKING_TOPIC_NAME
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: KAFKA_BOOKING_TOPIC_NAME
+        - name: KAFKA_CANCEL_TOPIC_NAME
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: KAFKA_CANCEL_TOPIC_NAME
+        - name: KAFKA_ADDR
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: KAFKA_ADDR
+        - name: KAFKA_BOOKING_TOPIC_PARTITION
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: KAFKA_BOOKING_TOPIC_PARTITION
+        - name: KAFKA_CANCEL_TOPIC_PARTITION
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: KAFKA_CANCEL_TOPIC_PARTITION
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_HOST
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: POSTGRES_HOST
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: POSTGRES_DB
+        - name: THEATER_AMOUNT
+          valueFrom:
+            secretKeyRef:
+              name: as-booking-secret
+              key: THEATER_AMOUNT
       imagePullSecrets:
       - name: dockerconfigjson-github-com
