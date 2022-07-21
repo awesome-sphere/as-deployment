@@ -1,8 +1,10 @@
 apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
-  name: simplest
+  name: simple
 spec:
+  mode: deployment
+  hostNetwork: true
   config: |
     receivers:
       otlp:
@@ -10,13 +12,25 @@ spec:
           grpc:
           http:
     processors:
-
     exporters:
       logging:
-
+      otlp:
+        endpoint: https://otlp.nr-data.net:4317
+        headers:
+         "api-key": ""
+      jaeger:
+        endpoint: "jaeger-prod-collector.observability:14250"
+        tls: 
+          insecure: "true"
     service:
       pipelines:
         traces:
           receivers: [otlp]
           processors: []
-          exporters: [logging]
+          exporters: [jaeger,otlp]
+        metrics:
+          receivers: [otlp]
+          exporters: [otlp]
+        logs:
+          receivers: [otlp]
+          exporters: [otlp]
