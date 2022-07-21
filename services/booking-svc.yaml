@@ -119,7 +119,7 @@ spec:
     spec:
       containers:
       - name:  as-booking-consumer
-        image: ghcr.io/awesome-sphere/as-booking/as-booking:latest
+        image: ghcr.io/awesome-sphere/as-booking-consumer/as-booking:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 9009
