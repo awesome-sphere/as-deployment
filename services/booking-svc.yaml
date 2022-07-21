@@ -1,0 +1,104 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: as-booking-svc
+spec:
+  selector:
+    app: as-booking
+  ports:
+  - protocol: TCP
+    port: 9009
+---
+# BOOKING SERVICE DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: as-booking
+  labels:
+    app: as-booking
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: as-booking
+  template:
+    metadata:
+      labels:
+        app: as-booking
+      annotations:
+        sidecar.opentelemetry.io/inject: "true" 
+    spec:
+      containers:
+      - name:  as-booking
+        image: ghcr.io/awesome-sphere/as-booking/as-booking:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9009
+        env:
+        - name: KAFKA_BOOKING_TOPIC_NAME
+          valueFrom:
+            secretKeyRef:
+              name: booking-secret
+              key: KAFKA_BOOKING_TOPIC_NAME
+        # - name: KAFKA_TOPIC_PARTITION
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: payment-secret
+        #       key: KAFKA_TOPIC_PARTITION
+        # - name: CREATE_ORDER_TOPIC
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: payment-secret
+        #       key: CREATE_ORDER_TOPIC
+        # - name: UPDATE_ORDER_TOPIC
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: payment-secret
+        #       key: UPDATE_ORDER_TOPIC
+      imagePullSecrets:
+      - name: dockerconfigjson-github-com
+---
+# BOOKING CONSUMER DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: as-booking-consumer
+  labels:
+    app: as-booking-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: as-booking-consumer
+  template:
+    metadata:
+      labels:
+        app: as-booking-consumer
+    spec:
+      containers:
+      - name:  as-booking-consumer
+        image: ghcr.io/awesome-sphere/as-booking-consumer/as-booking-consumer:latest
+        imagePullPolicy: Always
+        env:
+        # - name: KAFKA_ADDR
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: payment-secret
+        #       key: KAFKA_ADDR
+        # - name: KAFKA_TOPIC_PARTITION
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: payment-secret
+        #       key: KAFKA_TOPIC_PARTITION
+        # - name: CREATE_ORDER_TOPIC
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: payment-secret
+        #       key: CREATE_ORDER_TOPIC
+        # - name: UPDATE_ORDER_TOPIC
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: payment-secret
+        #       key: UPDATE_ORDER_TOPIC
+      imagePullSecrets:
+      - name: dockerconfigjson-github-com
