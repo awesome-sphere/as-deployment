@@ -82,9 +82,6 @@ metadata:
     app: postgres-user
 spec:
   ports:
-    - port: 5433
-      targetPort: 5432
+    - port: 5432
   selector:
     app: postgres-user
-  # NOTE: Remove this when deployed
-  type: LoadBalancer

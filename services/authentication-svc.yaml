@@ -72,4 +72,3 @@ spec:
               key: POSTGRES_PASSWORD
       imagePullSecrets:
       - name: dockerconfigjson-github-com
----

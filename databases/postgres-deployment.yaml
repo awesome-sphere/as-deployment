@@ -83,7 +83,5 @@ metadata:
 spec:
   ports:
     - port: 5432
-  # remove this when we deploy controller 
-  type: LoadBalancer
   selector:
     app: postgres-app

@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: postgres-payment-pv
+  name: postgres-general-pv
   labels:
     type: local
-    app: postgres-payment
+    app: postgres-general
 spec:
   storageClassName: manual
   capacity:
@@ -17,9 +17,9 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgres-payment-pvc
+  name: postgres-general-pvc
   labels:
-    app: postgres-payment
+    app: postgres-general
 spec:
   storageClassName: manual
   accessModes:
@@ -31,19 +31,19 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres-payment
+  name: postgres-general
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgres-payment
+      app: postgres-general
   template:
     metadata:
       labels:
-        app: postgres-payment
+        app: postgres-general
     spec:
       containers:
-      - name: postgres-payment
+      - name: postgres-general
         image: postgres:12.10-alpine
         imagePullPolicy: "IfNotPresent"
         ports:
@@ -52,36 +52,36 @@ spec:
         - name: POSTGRES_DB
           valueFrom:
             secretKeyRef:
-              name: postgres-payment-secret
+              name: postgres-general-secret
               key: POSTGRES_DB
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
-              name: postgres-payment-secret
+              name: postgres-general-secret
               key: POSTGRES_USER
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: postgres-payment-secret
+              name: postgres-general-secret
               key: POSTGRES_PASSWORD
         volumeMounts:
         - mountPath: /var/lib/postgresql/user-data
-          name: postgres-payment-data
+          name: postgres-general-data
       volumes:
-      - name: postgres-payment-data
+      - name: postgres-general-data
         persistentVolumeClaim:
-          claimName: postgres-payment-pvc
+          claimName: postgres-general-pvc
       imagePullSecrets:
       - name: dockerconfigjson-github-com
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres-payment
+  name: postgres-general
   labels:
-    app: postgres-payment
+    app: postgres-general
 spec:
   ports:
     - port: 5432
   selector:
-    app: postgres-payment
+    app: postgres-general
